@@ -17,7 +17,6 @@ import import_data
 import transform_data
 import fit_data
 import export_data
-from buttons import *
 
 root = tk.Tk()
 root.wm_title("Specview")
@@ -60,7 +59,8 @@ def specfitcsv_plot(file, desc = "", nrview = 6):
 
 def csv3d_plot(file):
 
-    draw_3d_plotarea()
+    fig = plt.figure()
+    my3dplot = fig.gca(projection='3d')
 
     data = import_data.import_specfit(file)
     (x, data_tr, time) = transform_data.kin_3d_spec(data)
@@ -69,9 +69,8 @@ def csv3d_plot(file):
     my3dplot.set_xlabel('wavelength (nm)')
     my3dplot.set_ylabel('time (s)')
     my3dplot.set_zlabel('absorbance')
-    #myplot.set_title(file)
 
-    # plot every single spectrum and change color every time
+    # plot every single spectrum
     sp_counter = 0
     if numpy.amax(data_tr) < 1.5:
         zmax = numpy.amax(data_tr)
@@ -83,8 +82,8 @@ def csv3d_plot(file):
             my3dplot.set_zlim3d(-0.02, zmax)
             my3dplot.set_ylim3d(0.0, time[len(time)-1])
         sp_counter = sp_counter + 1
-    canvas3d.show()
-    canvas3d.get_tk_widget().pack(side='top', fill='both', expand=1)
+    fig.canvas.set_window_title("Specview 3D Plot")
+    plt.show()
 
 
 # plot a time trace from csv file with a given wavelength
@@ -146,6 +145,7 @@ def fit_plot(file, wavelength, r_func, xmin, xmax):
 
     canvas.show()
 
+
 #
 #
 #
@@ -154,6 +154,15 @@ def fit_plot(file, wavelength, r_func, xmin, xmax):
 #
 #
 
+
+# button event to plot time trace spectrum
+def button_time_tr():
+    try:
+        global wl
+        wl = float(input_wl.get())
+        timetrace_plot(file, wl)
+    except:
+        tkMessageBox.showerror("Error!", "No spectrum loaded.")
 
 # quit the program
 def kill():
@@ -264,20 +273,6 @@ def draw_plotarea():
     toolbar = NavigationToolbar2TkAgg( canvas, root )
     toolbar.update()
     canvas._tkcanvas.pack(side='top', fill='both', expand=1)
-
-
-def draw_3d_plotarea():
-    top_3d = tk.Toplevel(root)
-    top_3d.geometry("+200+200")
-    top_3d.wm_title("Specview 3D Plot")
-    global popfig
-    popfig = plt.figure()
-    global my3dplot
-    my3dplot = popfig.add_subplot(111, projection="3d")
-    global canvas3d
-    canvas3d = FigureCanvasTkAgg(popfig, master=top_3d)
-    canvas3d.show()
-    canvas3d.get_tk_widget().pack(side='top', fill='both', expand=1)
 
 
 # draw the pop up window for the time trace
