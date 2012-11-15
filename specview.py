@@ -234,7 +234,8 @@ def button_fit_do():
                 tkMessageBox.showerror("Error!", "Error in range definition.")
                 return(None)
         fit_plot(file, wl, r_func, xmin, xmax)
-    except:
+    except Exception, e:
+        print e
         tkMessageBox.showerror("Error!", "No spectrum loaded or no wavelength selected")
 
 

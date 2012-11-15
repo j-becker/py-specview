@@ -30,7 +30,7 @@ def fit_tt(x, y, r_func = "1exp", xmin = 0, xmax = 0, A0 = 0, k = 1):
 
 	# definitions of the integrated rate laws
 	if r_func == "1exp":
-		sv = [-1, 1, 0]
+		sv = [0, 1, 0]
 		def func(x, A0, y0, k0):
 			return(A0 * numpy.exp(-k0 * x) + y0)
 	if r_func == "2exp":
@@ -39,7 +39,7 @@ def fit_tt(x, y, r_func = "1exp", xmin = 0, xmax = 0, A0 = 0, k = 1):
 			return((A0 * numpy.exp(-k0 * x)) + (A1 * numpy.exp(-k1 * x)) + y0)
 
 
-	(popt, pcov) = opt.curve_fit(func, x, y, sv)
+	(popt, pcov) = opt.curve_fit(func, x, y, sv, maxfev=2000)
 
 	errors = []
 	z = 0
