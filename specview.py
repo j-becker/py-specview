@@ -28,8 +28,12 @@ def specfitcsv_plot(file, desc = "", nrview = 6):
 
     global data
 
-    data = import_data.import_specfit(file)
-    (x, data_tr) = transform_data.kin_spec_transform(data)
+    try:
+      data = import_data.import_specfit(file)
+      (x, data_tr) = transform_data.kin_spec_transform(data)
+    except:
+      data = import_data.import_oldspecfit(file)
+      (x, data_tr) = transform_data.kin_spec_transform(data)
 
     myplot.clear()
 
@@ -62,8 +66,13 @@ def csv3d_plot(file):
     fig = plt.figure()
     my3dplot = fig.gca(projection='3d')
 
-    data = import_data.import_specfit(file)
-    (x, data_tr, time) = transform_data.kin_3d_spec(data)
+    try:
+      data = import_data.import_specfit(file)
+      (x, data_tr, time) = transform_data.kin_3d_spec(data)
+    except:
+      data = import_data.import_oldspecfit(file)
+      (x, data_tr, time) = transform_data.kin_3d_spec(data)
+
 
     # optional labels
     my3dplot.set_xlabel('wavelength (nm)')
@@ -89,8 +98,13 @@ def csv3d_plot(file):
 # plot a time trace from csv file with a given wavelength
 def timetrace_plot(file, wavelength):
     myplot.clear()
-    data = import_data.import_specfit(file)
-    (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
+    try:
+      data = import_data.import_specfit(file)
+      (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
+    except:
+      data = import_data.import_oldspecfit(file)
+      (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
+
 
     myplot.set_xlabel("time")
     myplot.set_ylabel("absorbance")
@@ -106,8 +120,12 @@ def timetrace_plot(file, wavelength):
 # different functions for fitting are possible, also different fitting ranges
 def fit_plot(file, wavelength, r_func, xmin, xmax):
     myplot.clear()
-    data = import_data.import_specfit(file)
-    (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
+    try:
+      data = import_data.import_specfit(file)
+      (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
+    except:
+      data = import_data.import_oldspecfit(file)
+      (time, absorbance, wl_data) = transform_data.timetrace(data, wavelength)
 
     myplot.set_xlabel("time")
     myplot.set_ylabel("absorbance")
@@ -176,9 +194,9 @@ def open_csv():
     global file
     file = tkFileDialog.askopenfilename(title='Choose a file')
     try:
-        specfitcsv_plot(file)
+      specfitcsv_plot(file)
     except:
-        tkMessageBox.showerror("Error!", "Wrong file format.")
+      tkMessageBox.showerror("Error!", "Wrong file format.")
 
 
 # save data for external use (Origin & co)
@@ -323,7 +341,7 @@ def draw_customplot_popup():
 
     buttonframe = tk.Frame(top_cp)
     buttonframe.pack(side=tk.BOTTOM)
-    
+
     button_customize1 = tk.Button(buttonframe, text="Apply", command = customplot_apply)
     button_customize1.pack(side=tk.LEFT)
     button_customize2 = tk.Button(buttonframe, text="OK", command = customplot_ok)
@@ -339,7 +357,7 @@ def draw_simplefit_popup():
     tk.Label(top_sf, text="Integrated Rate Law:").pack()
     global r_fitf_dd
     r_fitf_dd = tk.StringVar(top_sf)
-    r_fitf_dd.set("1 Exp + y0") # default value 
+    r_fitf_dd.set("1 Exp + y0") # default value
 
     fitdd = tk.OptionMenu(top_sf, r_fitf_dd, "1 Exp + y0")
     fitdd.pack()
