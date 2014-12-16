@@ -24,7 +24,7 @@ root.wm_title("Specview")
 
 
 # plot the full stopped-flow spectra with a given csv-file
-def specfitcsv_plot(file, desc = "", nrview = 6):
+def specfitcsv_plot(file, desc = "", nrview = 6, old = 0):
 
     global data
 
@@ -34,6 +34,7 @@ def specfitcsv_plot(file, desc = "", nrview = 6):
     except:
       data = import_data.import_oldspecfit(file)
       (x, data_tr) = transform_data.kin_spec_transform(data)
+      old = 1
 
     myplot.clear()
 
@@ -44,7 +45,10 @@ def specfitcsv_plot(file, desc = "", nrview = 6):
         desc = file
     myplot.set_title(desc)
     myplot.set_ylim([-0.02, 2])
-    myplot.set_xlim([300, 700])
+    if old == 1:
+        myplot.set_xlim([310, 1125])
+    else:
+        myplot.set_xlim([300, 700])
     #myplot.set_autoscaley_on(False)
     myplot.set_autoscalex_on(False)
     # defining a range of colors to switch between
